@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ui
+  namespace: fission-demo
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        svc: ui
+    spec:
+      containers:
+      - name: client
+        image: yqf3139/fission-demo-ui:latest
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui
+  namespace: fission-demo
+  labels:
+    svc: ui
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 3000
+    nodePort: 31330
+  selector:
+    svc: ui
