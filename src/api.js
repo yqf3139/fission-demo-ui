@@ -48,7 +48,7 @@ export function getClients() {
 export function getImages() {
     return axios({
         method: 'GET',
-        url: 'api/images',
+        url: '/api/images',
         headers,
     })
         .then(checkStatus)

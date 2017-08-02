@@ -11,7 +11,7 @@ spec:
         svc: ui
     spec:
       containers:
-      - name: client
+      - name: ui
         image: yqf3139/fission-demo-ui:latest
 
 ---
@@ -26,7 +26,7 @@ spec:
   type: NodePort
   ports:
   - port: 80
-    targetPort: 3000
+    targetPort: 80
     nodePort: 31330
   selector:
     svc: ui
