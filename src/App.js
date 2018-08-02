@@ -17,6 +17,10 @@ const translations = {
     cat: '猫',
     bird: '鸟',
     tiger: '老虎',
+    bear: '熊',
+    deer: '鹿',
+    goat: '山羊',
+    wolf: '狼',
 };
 
 class App extends Component {

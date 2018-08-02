@@ -13,6 +13,7 @@ spec:
       containers:
       - name: ui
         image: yqf3139/fission-demo-ui:latest
+        imagePullPolicy: Always
 
 ---
 apiVersion: v1
