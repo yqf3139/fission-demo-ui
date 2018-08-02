@@ -231,7 +231,11 @@ class App extends Component {
                         </Modal.Header>
                         <Modal.Body>
                             <h3>
-                                这被识别为一只
+                                有
+                                <span className="label label-warning">
+                                    {selectedImage.possibility}
+                                </span>
+                                %的可能性为一只
                                 <span className="label label-primary">
                                     {translations[selectedImage.type]}
                                 </span>
@@ -241,7 +245,7 @@ class App extends Component {
                             <h4>
                                 在
                                 <span className="label label-info">
-                                    {new Date(selectedImage.create_time).toLocaleString()}
+                                    {new Date(selectedImage.create_time).toGMTString()}
                                 </span>
                                 , 它被结点
                                 <span className="label label-success">{selectedImage.client_id}</span>
