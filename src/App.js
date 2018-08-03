@@ -4,7 +4,6 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ErrorIndicator from './ErrorIndicator';
 import StackGrid from "react-stack-grid";
-// import LoadingIndicator from './LoadingIndicator';
 
 import {getClients, getImages, getImagesByClient, getImagesByType} from './api'
 
@@ -13,14 +12,15 @@ const translations = {
     error: "发生故障",
 
     unknown: '不明生物',
-    dog: '狗',
-    cat: '猫',
-    bird: '鸟',
-    tiger: '老虎',
-    bear: '熊',
-    deer: '鹿',
-    goat: '山羊',
-    wolf: '狼',
+    animal: '动物',
+    dog: '动物',
+    cat: '动物',
+    bird: '动物',
+    tiger: '动物',
+    bear: '动物',
+    deer: '动物',
+    goat: '动物',
+    wolf: '动物',
 };
 
 class App extends Component {
@@ -47,9 +47,9 @@ class App extends Component {
         this.loadImages = this.loadImages.bind(this);
         this.loadClients = this.loadClients.bind(this);
 
-        this.loadClients();
+        // this.loadClients();
         this.loadImages();
-        setInterval(this.loadClients, 10 * 1000);
+        // setInterval(this.loadClients, 10 * 1000);
         setInterval(this.loadImages, 10 * 1000);
     }
 
@@ -137,12 +137,16 @@ class App extends Component {
         const {
             errors, images, clients, imageTypes, clientIds, selectedClientId, selectedType, showModal, selectedImage
         } = this.state;
+
+        const animals_images = images.filter(im => im.type !== 'unknown');
+        const unknown_images = images.filter(im => im.type === 'unknown');
+
         return (
             <div className="App">
                 <div className="App-header">
                     <h2>"野生动物在哪里"管理界面</h2>
                     <p className="App-intro">
-                        您可以检查摄像头节点的工作状态,并查看拍摄的照片
+                        您可以查看用户拍摄的照片
                     </p>
                 </div>
                 <div className="container">
@@ -150,39 +154,14 @@ class App extends Component {
                     <br/>
                     <Tabs id="chooser-tabs" onSelect={this.onSelectTab}>
                         <Tab eventKey={'image'} title="照片">
-                            <h3>
+                            <h2>
                                 <span>已经上传的图片数量: </span>
                                 <span className="label label-info">{images.length}</span>
-                            </h3>
-                            <form className="form-inline">
-                                <div className="form-group">
-                                    <label htmlFor="selectedClientId">筛选节点编号</label>
-                                    <select className="form-control" name="selectedClientId" value={selectedClientId}
-                                            onChange={this.onChange}>
-                                        <option key={"opt-0"} value="">-</option>
-                                        {
-                                            clientIds.map((id, index) =>
-                                                <option key={`opt-${index + 1}`} value={id}>{id}</option>
-                                            )
-                                        }
-                                    </select>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="selectedType">筛选动物类型</label>
-                                    <select className="form-control" name="selectedType" value={selectedType}
-                                            onChange={this.onChange}>
-                                        <option key={"opt-0"} value="">-</option>
-                                        {
-                                            imageTypes.map((type, index) =>
-                                                <option key={`opt-${index + 1}`} value={type}>{type}</option>
-                                            )
-                                        }
-                                    </select>
-                                </div>
-                            </form>
+                            </h2>
+                            <h2>动物</h2>
                             <StackGrid columnWidth={200} monitorImagesLoaded={true}>
                                 {
-                                    images.map((image, index) =>
+                                    animals_images.map((image, index) =>
                                         <div key={`img-${index}`} className="img-pointer img-hover">
                                             <img
                                                 onClick={() => this.onOpenModal(image)}
@@ -192,41 +171,20 @@ class App extends Component {
                                     )
                                 }
                             </StackGrid>
-                        </Tab>
-                        <Tab eventKey={'client'} title="摄像头节点">
-                            <h3>
-                                <span>摄像头节点数量: </span>
-                                <span className="label label-info">{clients.length}</span>
-                            </h3>
-                            <table className="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>编号</th>
-                                    <th>状态</th>
-                                    <th>电量</th>
-                                    <th>距离上次活跃</th>
-                                </tr>
-                                </thead>
-                                <tbody style={{textAlign: 'left'}}>
+                            <hr/>
+                            <h2>不明生物</h2>
+                            <StackGrid columnWidth={200} monitorImagesLoaded={true}>
                                 {
-                                    clients.map((client, index) => <tr key={`client-${index}`}>
-                                        <td>{client.id}</td>
-                                        <td className={client.status === 'error' ? 'bg-danger' : ''}>
-                                            {translations[client.status]}
-                                        </td>
-                                        <td className={client.battery < 20 ? 'bg-warning' : ''}>
-                                            {`${client.battery}%`}
-                                        </td>
-                                        <td className={(Date.now() - client.atime) > 5 * 60 * 1000 ? 'bg-danger' : ''}>
-                                            {
-                                                parseInt((Date.now() - client.atime) / 1000 / 60) + ' 分钟, '
-                                                + parseInt((Date.now() - client.atime) / 1000 % 60) + ' 秒'
-                                            }
-                                        </td>
-                                    </tr>)
+                                    unknown_images.map((image, index) =>
+                                        <div key={`img-${index}`} className="img-pointer img-hover">
+                                            <img
+                                                onClick={() => this.onOpenModal(image)}
+                                                src={`/api/images/bucket/thumbnails-small-color/img/${image.name}`}
+                                            />
+                                        </div>
+                                    )
                                 }
-                                </tbody>
-                            </table>
+                            </StackGrid>
                         </Tab>
                     </Tabs>
                     <Modal show={showModal} onHide={this.onCloseModal}>
@@ -246,15 +204,6 @@ class App extends Component {
                             </h3>
                             <hr />
                             <img width={"100%"} src={`/api/images/bucket/images/img/${selectedImage.name}`}/>
-                            <h4>
-                                在
-                                <span className="label label-info">
-                                    {new Date(selectedImage.create_time).toGMTString()}
-                                </span>
-                                , 它被结点
-                                <span className="label label-success">{selectedImage.client_id}</span>
-                                发现.
-                            </h4>
                         </Modal.Body>
                         <Modal.Footer>
                             <Button onClick={this.onCloseModal}>关闭</Button>
